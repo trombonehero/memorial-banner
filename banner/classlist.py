@@ -1,10 +1,27 @@
 from BeautifulSoup import BeautifulSoup
 
+
+class Student:
+	def __init__(self, student_id, name, email):
+		self.id = student_id
+		self.name = name
+		self.email = email
+
+	def email_prefix(self):
+		return self.email.split('@')[0]
+
+	def __str__(self):
+		return '%s (%d)' % (self.name, self.id)
+
+	def __repr__(self):
+		return "{ %d: '%s', '%s' }" % (self.id, self.name, self.email)
+
+
 def parse_html(html):
 	"""
 	Parse the HTML output of Banner's "Summary Class List", returning
 	a tuple with a dictionary of class information (class name, etc.)
-	and a dictionary of student information keyed on student ID.
+	and a list of Student objects.
 
 	Example usage:
 	(course_info, students) = banner.classlist.parse_html(open(filename, 'r'))
@@ -13,9 +30,8 @@ def parse_html(html):
 	print(course_info['duration'])
 	print('')
 
-	for id in sorted(students):
-		(name, email) = students[id]
-		print('%9d %14s %-40s' % (id, email, name))
+	for s in sorted(students, key = lambda s: s.name):
+		print('%9d %14s %-40s' % (s.id, s.email, s.name))
 	"""
 
 	soup = BeautifulSoup(html)
@@ -31,7 +47,7 @@ def parse_html(html):
 
 	course_info['crn'] = int(course_info['crn'].split(':')[1])
 
-	students = {}
+	students = []
 	for row in tables['Summary Class List'].findAll('tr'):
 		columns = row.findAll('td')
 		if len(columns) == 1:
@@ -43,6 +59,6 @@ def parse_html(html):
 		student_id = int(columns[2].text)
 		email = columns[7].find('a')['href'].split(':')[1]
 
-		students[student_id] = (name, email)
+		students.append(Student(student_id, name, email))
 
 	return (course_info, students)
