@@ -5,6 +5,17 @@ def parse_html(html):
 	Parse the HTML output of Banner's "Summary Class List", returning
 	a tuple with a dictionary of class information (class name, etc.)
 	and a dictionary of student information keyed on student ID.
+
+	Example usage:
+	(course_info, students) = banner.classlist.parse_html(open(filename, 'r'))
+
+	print('%s (CRN %d)' % (course_info['name'], course_info['crn']))
+	print(course_info['duration'])
+	print('')
+
+	for id in sorted(students):
+		(name, email) = students[id]
+		print('%9d %14s %-40s' % (id, email, name))
 	"""
 
 	soup = BeautifulSoup(html)
