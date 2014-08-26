@@ -4,17 +4,21 @@ from BeautifulSoup import BeautifulSoup
 class Student:
 	def __init__(self, student_id, name, email):
 		self.id = student_id
-		self.name = name
+		(self.surname, self.forenames) = name.split(', ')
 		self.email = email
 
 	def email_prefix(self):
 		return self.email.split('@')[0]
 
+	def name(self):
+		return ' '.join([ self.forenames, self.surname ])
+
 	def __str__(self):
-		return '%s (%d)' % (self.name, self.id)
+		return '%s (%d)' % (self.name(), self.id)
 
 	def __repr__(self):
-		return "{ %d: '%s', '%s' }" % (self.id, self.name, self.email)
+		return "{ %d: '%s' '%s', '%s' }" % (
+			self.id, self.forenames, self.surname, self.email)
 
 
 def parse_html(html):
