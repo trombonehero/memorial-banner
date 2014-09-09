@@ -59,9 +59,9 @@ def parse_html(html):
 
 		(num, name, stuid, status, degree, credit_hours, grade, email) = columns
 
-		name = columns[1].text
-		student_id = int(columns[2].text)
-		email = columns[7].find('a')['href'].split(':')[1]
+		name = name.text
+		student_id = int(stuid.text)
+		email = email.find('a')['href'].split(':')[1]
 
 		students.append(Student(student_id, name, email))
 
