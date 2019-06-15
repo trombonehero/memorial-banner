@@ -2,10 +2,11 @@ from BeautifulSoup import BeautifulSoup
 
 
 class Student:
-	def __init__(self, student_id, name, email):
+	def __init__(self, student_id, name, email, level):
 		self.id = student_id
 		(self.surname, self.forenames) = name.split(', ')
 		self.email = email
+		self.level = level
 
 	def email_prefix(self):
 		return self.email.split('@')[0]
@@ -57,12 +58,14 @@ def parse_html(html):
 		if len(columns) == 1:
 			continue
 
-		(num, name, stuid, status, degree, credit_hours, grade, email) = columns
+		(num, name, stuid, status, level, credit_hours) = columns[:6]
+		email = columns[-1]
 
 		name = name.text
 		student_id = int(stuid.text)
+		level = level.text
 		email = email.find('a')['href'].split(':')[1]
 
-		students.append(Student(student_id, name, email))
+		students.append(Student(student_id, name, email, level))
 
 	return (course_info, students)
